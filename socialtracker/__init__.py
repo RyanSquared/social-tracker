@@ -15,15 +15,18 @@ class TrackerThread(threading.Thread):
         six.print_(*args + (self.tracker,))
 
     def run(self):
-        self.log("running", self)
-        for post in self.tracker["tracker"].get_posts():
-            for callback in self.tracker["handlers"]:
-                try:
-                    callback(post)
-                except Exception as err:  # pylint: disable=broad-except
-                    self.log("Callback had exception:", repr(callback),
-                             repr(err))
-        self.log("dying", self)
+        try:
+            self.log("running", self)
+            for post in self.tracker["tracker"].get_posts():
+                for callback in self.tracker["handlers"]:
+                    try:
+                        callback(post)
+                    except Exception as err:  # pylint: disable=broad-except
+                        self.log("Callback had exception:", repr(callback),
+                                 repr(err))
+            self.log("dying", self)
+        except Exception as err:  # pylint: disable=broad-except
+            self.log("Exception in pulling posts:", repr(err))
 
 
 class TrackerWatcher(object):
