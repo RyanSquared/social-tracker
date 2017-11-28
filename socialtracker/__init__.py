@@ -1,4 +1,5 @@
 "Monitor social networks such as Twitter and Instagram."
+import logging
 import threading
 import six
 from socialtracker.base import SocialTracker
@@ -12,7 +13,7 @@ class TrackerThread(threading.Thread):
 
     def log(self, *args):
         "Write a message to output"
-        six.print_(*args + (self.tracker,))
+        logging.info(" ".join((str(x) for x in args + (self.tracker,))))
 
     def run(self):
         try:
@@ -37,7 +38,7 @@ class TrackerWatcher(object):
 
     def log(self, *args):
         "Write a message to output"
-        six.print_(*args + (self,))
+        logging.info(" ".join((str(x) for x in args + (self,))))
 
     def attach_tracker(self, tracker, name):
         "Add a value of `tracker` with given name `name`."
