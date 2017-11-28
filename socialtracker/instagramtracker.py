@@ -16,13 +16,16 @@ class InstagramTracker(SocialTracker):
         """Set up data from `settings` and initialize tags."""
         super(InstagramTracker, self).__init__(tags)
         self.auth_token = settings["auth_token"]
+        self.client_id = settings["client_id"]
 
     def _get_from_endpoint(self, endpoint, params=None):
         """Query the Instagram API and raise exceptions on bad requests."""
         if params is None:
-            params = [('ACCESS_TOKEN', self.auth_token)]
+            params = [('access_token', self.auth_token),
+                      ('client_id', self.client_id)]
         else:
-            params.append([('ACCESS_TOKEN', self.auth_token)])
+            params.extend([('access_token', self.auth_token),
+                           ('client_id', self.client_id)])
 
         content = requests.get(
             "https://api.instagram.com{}".format(endpoint), params)
