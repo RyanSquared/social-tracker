@@ -1,5 +1,7 @@
 "Base class for socialTrackers."
 import collections
+import logging
+import os
 import requests
 
 
@@ -26,6 +28,9 @@ class SocialTracker(object):
     @staticmethod
     def render_icon(url, filename):
         """Pull an icon from `url` and place the output in `filename`."""
+        if os.path.isfile(filename):
+            logging.debug("Found old icon for: %s", filename)
+            return filename
         for number, icon in enumerate(SocialTracker.icons):
             if icon[0] == url:
                 # percolate up to implement priority
@@ -34,10 +39,24 @@ class SocialTracker(object):
                     SocialTracker.icons.remove(icon)
                     SocialTracker.icons.appendleft(icon)
                 image = icon[1]
+                logging.debug("Found cached icon for: %s", filename)
                 break
         else:
+            logging.debug("Pulling from %s to get data for %s", url, filename)
             image = requests.get(url).content
             SocialTracker.icons.appendleft((url, image))
         with open(filename, "wb") as handler:
             handler.write(image)
         return filename
+
+    @staticmethod
+    def render_media(url, filename):
+        """Pull media from `url` and place output in `filename`."""
+        if os.path.isfile(filename):
+            logging.debug("Found saved media for: %s", filename)
+            return
+        logging.debug("Opening stream for URL: %s", url)
+        stream = requests.get(url, stream=True)
+        with open(filename, 'wb') as handle:
+            for block in stream.iter_content(1024):
+                handle.write(block)
