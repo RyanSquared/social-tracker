@@ -31,7 +31,8 @@ class SocialTracker(object):
         """Pull an icon from `url` and place the output in `filename`."""
         filename = filename.rpartition(".")[0] + ".png"
         if os.path.isfile(filename):
-            os.utime(filename, time.time())
+            timestamp = time.time()
+            os.utime(filename, (timestamp, timestamp))
             logging.debug("Found old icon for: %s", filename)
             return filename
         logging.debug("Pulling from %s to get data for %s", url, filename)
@@ -45,7 +46,8 @@ class SocialTracker(object):
         """Pull media from `url` and place output in `filename`."""
         filename = filename.rpartition(".")[0] + ".png"
         if os.path.isfile(filename):
-            os.utime(filename, time.time())
+            timestamp = time.time()
+            os.utime(filename, (timestamp, timestamp))
             logging.debug("Found saved media for: %s", filename)
             return filename
         logging.debug("Opening stream for URL: %s", url)
