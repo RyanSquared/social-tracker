@@ -69,9 +69,5 @@ class TrackerWatcher(object):
 
     def wait(self):
         "Wait for all currently-running threads to finish."
-        for name, tracker in six.iteritems(self.trackers):
-            thread = tracker.get("thread")
-            if thread is None or not thread.isAlive():
-                self.log("dead thread:", name, thread)
-                continue
+        for _, tracker in six.iteritems(self.trackers):
             tracker["thread"].join()
