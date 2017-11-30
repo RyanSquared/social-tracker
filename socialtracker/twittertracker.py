@@ -2,8 +2,6 @@
 from socialtracker.base import SocialTracker
 import twitter
 
-htmlparser = HTMLParser()  # pylint: disable=invalid-name
-
 
 class TwitterTracker(SocialTracker):
     "Use Twitter's API to pull in requests."
