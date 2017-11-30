@@ -1,5 +1,4 @@
 "Module for Twitter SocialTracker."
-from six.moves.html_parser import HTMLParser  # pylint: disable=import-error
 from socialtracker.base import SocialTracker
 import twitter
 
@@ -31,7 +30,6 @@ class TwitterTracker(SocialTracker):
             self._setup_OAuth()
         for tag in self.tags:
             for tweet in self.twitter.search.tweets(
-                    q=tag, include_entities=True,
+                    q=tag,
                     count=self.tweet_count, result_type="recent")["statuses"]:
-                tweet["text"] = htmlparser.unescape(tweet["text"])
                 yield tweet
