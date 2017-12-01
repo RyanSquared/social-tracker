@@ -1,4 +1,8 @@
 "Module for Instagram SocialTracker"
+try:
+    from functools import lru_cache
+except ImportError:
+    from backports.functools_lru_cache import lru_cache
 from socialtracker.base import SocialTracker
 import requests
 
@@ -6,7 +10,8 @@ import requests
 # - Only one token is used
 # \- Auth token is linked to client token
 # - There's no application token used in HTTP requests
-# - There's no decent Python module for this kind of thing. I should write one.
+# - There's no decent Python module for this kind of thing. I should write one
+# - Users are accessible only by ID, not username
 
 
 class InstagramTracker(SocialTracker):
@@ -32,6 +37,12 @@ class InstagramTracker(SocialTracker):
         content.raise_for_status()
         return content.json()
 
+    @lru_cache()
+    def _get_uid_from_username(self, username):
+        "Get a user ID for usage with API from an Instagram username"
+        data = self._get_from_endpoint("/v1/users/search", [("q", username)])
+        return data["data"][0]["id"]
+
     def _get_tagged_posts(self, tag):
         """Get posts from a specific tag"""
         data = self._get_from_endpoint("/v1/tags/{}/media/recent".format(
@@ -44,7 +55,11 @@ class InstagramTracker(SocialTracker):
         # Implementation consideration:
         # Instagram has lookup based off of ID, not username, so accounts
         # should be changed to an ID instead of a username.
-        raise NotImplementedError("::TODO::")
+        userid = self._get_uid_from_username(user)
+        data = self._get_from_endpoint("/v1/users/{}/media/recent".format(
+            userid))["data"]
+        for post in data:
+            yield post
 
     def get_posts(self):
         """Yield posts from Instagram's API"""
