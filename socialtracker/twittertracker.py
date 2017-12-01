@@ -28,6 +28,6 @@ class TwitterTracker(SocialTracker):
             self._setup_OAuth()
         for tag in self.tags:
             for tweet in self.twitter.search.tweets(
-                    q=tag,
+                    q=tag, include_entities=False,
                     count=self.tweet_count, result_type="recent")["statuses"]:
                 yield tweet
