@@ -2,6 +2,7 @@
 import logging
 import threading
 import six
+import json
 from socialtracker.base import SocialTracker
 
 
@@ -17,8 +18,14 @@ class TrackerThread(threading.Thread):
 
     def run(self):
         try:
+            post_cache = {}
             self.log("running", self)
             for post in self.tracker["tracker"].get_posts():
+                _hash = hash(json.dumps(post, sort_keys=True))
+                if post_cache.get(_hash) is not None:
+                    continue
+                else:
+                    post_cache[_hash] = True
                 for callback in self.tracker["handlers"]:
                     try:
                         callback(post)
