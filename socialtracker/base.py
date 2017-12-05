@@ -1,10 +1,10 @@
 "Base class for socialTrackers."
 import collections
-import io
 import logging
 import os
 import time
 import requests
+import six
 from PIL import Image
 
 
@@ -37,7 +37,7 @@ class SocialTracker(object):
             return filename
         logging.debug("Pulling from %s to get data for %s", url, filename)
         content = requests.get(url).content
-        image = Image.open(io.BytesIO(content))
+        image = Image.open(six.BytesIO(content))
         image.save(filename, "PNG")
         return filename
 
@@ -54,7 +54,7 @@ class SocialTracker(object):
         ext = filename.rpartition(".")[2]
         if ext == "png" or ext == "jpg":
             content = requests.get(url).content
-            image = Image.open(io.BytesIO(content))
+            image = Image.open(six.BytesIO(content))
             image.save(filename, "PNG")
             return filename
         stream = requests.get(url, stream=True)
