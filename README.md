@@ -4,6 +4,11 @@ A social activity monitor. Uses Python threads.  Documentation is visible with
 
 Python 3 support is not guaranteed.
 
+Because this library was designed for a program running on Raspberry Pis,
+images rendered by the `render_icon()` or `render_media()` functions (which
+should be either JPG or PNG format) will be converted to PNG, as PNG allows
+for hardware decoding.
+
 ## Examples
 
 ```py
@@ -35,7 +40,7 @@ def handle_twitter(post):
         "user": "@" + post["user"]["screen_name"],
         "text": post["text"],
         "id": post["id"],
-        "icon": "::TODO::",  # ::TODO::
+        "icon": "::TODO::",  # Go read up on SocialTracker.render_icon()
     })
 
 
