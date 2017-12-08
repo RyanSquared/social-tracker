@@ -47,12 +47,16 @@ class FlickrTracker(SocialTracker):
         # Limit to a week ago
         time = arrow.utcnow().shift(weeks=-1)
         for tag in self.tags:
-            params = [("tags", tag),
-                      ("extras", "date_upload,owner_name,tags,icon_server"),
+            params = [("extras", "date_upload,owner_name,tags,icon_server"),
                       ("min_upload_date", time.timestamp)]
+            if tag[:5].lower() == "from:":
+                params.insert(0, ("user_id", tag[5:]))
+            else:
+                params.insert(0, ("tags", tag))
             content = self._get_from_endpoint(
                 "flickr.photos.search", params)
             for post in itertools.islice(content["photos"]["photo"], 0, 30):
+                print post
                 yield post
 
     @staticmethod
