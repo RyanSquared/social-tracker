@@ -34,7 +34,6 @@ class InstagramTracker(SocialTracker):
 
         content = requests.get(
             "https://api.instagram.com{}".format(endpoint), params)
-        content.raise_for_status()
         return content.json()
 
     @lru_cache()
@@ -64,11 +63,14 @@ class InstagramTracker(SocialTracker):
     def get_posts(self):
         """Yield posts from Instagram's API"""
         for tag in self.tags:
-            # Following a user, yield from user posts
-            if tag[:5].lower() == "from:":
-                for post in self._get_user_posts(tag[5:].strip()):
-                    yield post
-            else:
-                tag = tag[1:] if tag[0] == "#" else tag
-                for post in self._get_tagged_posts(tag):
-                    yield post
+            try:
+                # Following a user, yield from user posts
+                if tag[:5].lower() == "from:":
+                    for post in self._get_user_posts(tag[5:].strip()):
+                        yield post
+                else:
+                    tag = tag[1:] if tag[0] == "#" else tag
+                    for post in self._get_tagged_posts(tag):
+                        yield post
+            except KeyError:  # If `data` doesn't exist (invalid request)
+                pass
