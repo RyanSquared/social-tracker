@@ -1,6 +1,9 @@
 "Module for Twitter SocialTracker."
 from socialtracker.base import SocialTracker
+from six.moves import html_parser
 import twitter
+
+H_P = html_parser.HTMLParser()
 
 
 class TwitterTracker(SocialTracker):
@@ -30,4 +33,4 @@ class TwitterTracker(SocialTracker):
             for tweet in self.twitter.search.tweets(
                     q=tag, include_entities=False,
                     count=self.tweet_count, result_type="recent")["statuses"]:
-                yield tweet
+                yield H_P.unescape(tweet)
