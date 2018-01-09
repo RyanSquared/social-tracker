@@ -2,7 +2,8 @@
 try:
     from functools import lru_cache
 except ImportError:
-    from backports.functools_lru_cache import lru_cache
+    from backports.functools_lru_cache import (  # pylint: disable=W0403
+        lru_cache)
 from socialtracker.base import SocialTracker
 import requests
 
