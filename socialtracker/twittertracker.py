@@ -33,4 +33,5 @@ class TwitterTracker(SocialTracker):
             for tweet in self.twitter.search.tweets(
                     q=tag, include_entities=True,
                     count=self.tweet_count, result_type="recent")["statuses"]:
-                yield H_P.unescape(tweet)
+                tweet["text"] = H_P.unescape(tweet["text"])
+                yield tweet
