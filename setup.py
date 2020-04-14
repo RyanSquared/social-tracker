@@ -6,5 +6,5 @@ setup(
     version='0.1.0',
     packages=['socialtracker'],
     install_requires=[
-        'twitter', 'requests', 'arrow', 'backports.functools_lru_cache',
-        'unidecode', 'pillow', 'requests-oauthlib'])
+        'twitter', 'requests', 'backports.functools_lru_cache', 'pillow',
+        'requests-oauthlib'])

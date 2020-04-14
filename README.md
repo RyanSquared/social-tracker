@@ -33,6 +33,7 @@ tweets = []
 @trackerwatcher.handle_tracker("twitter")
 def handle_twitter(post):
     "-"
+    # TODO replace with datetime, don't use arrow
     date = arrow.get(post["created_at"], "ddd MMM DD HH:mm:ss Z YYYY")
     tweets.append({
         "time": date.format("hh:mm A"),

@@ -1,8 +1,8 @@
 "Module for Flickr SocialTracker."
+from datetime import datetime, timedelta
 import itertools
 from socialtracker.base import SocialTracker
 import requests_oauthlib
-import arrow
 
 
 class FlickrTracker(SocialTracker):
@@ -45,10 +45,10 @@ class FlickrTracker(SocialTracker):
         if self.flickr is None:
             self._setup_OAuth()
         # Limit to a week ago
-        time = arrow.utcnow().shift(weeks=-1)
+        time = datetime.utcnow() - timedelta(days=10)
         for tag in self.tags:
             params = [("extras", "date_upload,owner_name,tags,icon_server"),
-                      ("min_upload_date", time.timestamp)]
+                      ("min_upload_date", time.timestamp())]
             if tag[:5].lower() == "from:":
                 params.insert(0, ("user_id", tag[5:]))
             else:
@@ -56,7 +56,6 @@ class FlickrTracker(SocialTracker):
             content = self._get_from_endpoint(
                 "flickr.photos.search", params)
             for post in itertools.islice(content["photos"]["photo"], 0, 30):
-                print post
                 yield post
 
     @staticmethod
